@@ -43,8 +43,8 @@ insert into government values(5,'Confederacy');
 insert into government values(6,'Democracy');
 insert into government values(7,'Corporate State');
 
-create table planet (
-	planet integer not null,
+create table system (
+	system integer not null,
 	galaxy integer not null,
 	economy integer not null,
 	government integer not null,
@@ -57,7 +57,7 @@ create table planet (
 	productivity,
 	xcoord number ,
 	ycoord number ,
-	primary key (galaxy,planet) ,
+	primary key (galaxy,system) ,
 	foreign key(galaxy) references galaxy(galaxy) ,
 	foreign key(economy) references economy(economy) ,
 	foreign key(government) references government(government)
@@ -87,20 +87,61 @@ create table planet (
 */
 
 create table user (
-	user integer PRIMARY KEY,
+	user integer PRIMARY KEY AUTOINCREMENT,
 	username string UNIQUE,
 	email string NOT NULL,
 	password string NOT NULL
 );
 
-create table my_description (
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) DEFAULT NULL,
+    login VARCHAR(255) NOT NULL,
+    password TEXT NOT NULL,
+    roles TEXT
+);
+
+
+create table my_system_description (
+	my_system_description integer PRIMARY KEY AUTOINCREMENT,
 	owner integer NOT NULL,
 	galaxy integer NOT NULL,
-	planet integer NOT NULL,
+	system integer NOT NULL,
 	description string,
-	PRIMARY KEY (owner,galaxy,planet),
+	generation number NOT NULL,
+	updated integer NOT NULL DEFAULT (strftime('%s','now')),
+	CONSTRAINT my_system_description_unique
+		UNIQUE(owner,galaxy,system,generation),
 	FOREIGN KEY(owner) REFERENCES user(user),
 	FOREIGN KEY(galaxy) REFERENCES galaxy(galaxy)	
 );
+
+create table my_system_mainplanet (
+	my_system_mainplanet integer PRIMARY KEY AUTOINCREMENT,
+	owner integer NOT NULL,
+	generation integer NOT NULL,
+	galaxy integer NOT NULL,
+	system integer NOT NULL,
+	updated integer NOT NULL DEFAULT (strftime('%s','now')),
+	
+	CONSTRAINT my_system_mainplanet_unique
+		UNIQUE (owner,generation,galaxy,system),
+	FOREIGN KEY(owner) REFERENCES user(user),
+	FOREIGN KEY(galaxy) REFERENCES galaxy(galaxy)
+);
+
+create table my_galaxy (
+	owner integer NOT NULL,
+	galaxy integer NOT NULL,
+	description string,
+	generation number NOT NULL,
+	updated integer NOT NULL DEFAULT (strftime('%s','now')),
+	CONSTRAINT my_galaxy_uniq
+		UNIQUE (owner,galaxy,generation),
+	FOREIGN KEY(owner) REFERENCES user(user),
+	FOREIGN KEY(galaxy) REFERENCES galaxy(galaxy)
+);
+
+
 
 

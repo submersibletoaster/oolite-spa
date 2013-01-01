@@ -1,0 +1,77 @@
+<html> 
+<head>
+ <title>My first Three.js app</title>
+ <link rel=stylesheet href="preview.css"/>
+</head>
+ <body>
+  <style>
+
+ </style>
+ <h1>Lalalala</h1>
+ <script src="three.js"></script>
+ <script src="THREEx.GeometryUtils.js"></script>
+ 
+ <canvas width="400" height="400" id="planet_canvas"/>
+ <script> 
+// Our Javascript will go here. 
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(25, 1.0, 0.1, 1000);
+var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("planet_canvas") } );
+renderer.setSize(400, 400);
+document.body.appendChild(renderer.domElement);
+
+//var sunPos = new THREE.Vector3( );
+
+var light = new THREE.PointLight( 0xffffff, 1 );
+light.position.set( 5, 2, -50 );
+scene.add( light );
+
+var sun = new THREE.SphereGeometry(6,12,12);
+var geometry = new THREE.SphereGeometry(1,24,24);
+
+var translation = new THREE.Vector3(0,0,0);
+
+//cubemap = THREE.ImageUtils.loadTexture("mycubemap.png");
+cubemap = THREE.ImageUtils.loadTextureCube(
+["mycube-1.png","mycube-2.png","mycube-3.png",
+"mycube-4.png","mycube-5.png","mycube-6.png"]);
+//cubemap = new THREE.Texture( document.getElementById("tex") ,THREE.CubeReflectionMapping);
+cubemap.format = THREE.RGBFormat;
+var shader = THREE.ShaderUtils.lib["cube"];
+console.log(shader);
+var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+console.log(uniforms);
+uniforms['tCube'].value = cubemap;
+
+var material = new THREE.ShaderMaterial({
+    fragmentShader  : shader.fragmentShader,
+    vertexShader    : shader.vertexShader,
+    uniforms        : uniforms
+});
+var sun_material = new THREE.MeshLambertMaterial(
+);
+console.log( material );
+var cube = new THREE.Mesh(geometry, material);
+var sun_mesh = new THREE.Mesh(sun, sun_material);
+cube.position.set( 0,0,0 );
+//sun_mesh.position.set( 5,2,-50 );
+scene.add(cube);
+scene.add(sun_mesh);
+camera.position.z = 50;
+camera.position.y = 2;
+camera.position.x = 2;
+camera.lookAt( translation );
+
+function render() {
+ requestAnimationFrame(render);
+ //cube.rotation.x += 0.1;
+ cube.rotation.y += 0.01;
+ renderer.render(scene, camera); 
+} 
+
+render();
+
+ </script>
+
+ </body>
+</html>

@@ -21,6 +21,12 @@ this._dump_galaxy = function (galnum) {
 		// eek!
 		var copy  = JSON.parse( JSON.stringify( sys ) );
 		copy.coordinates =[ sys.coordinates.x , sys.coordinates.y ];
+		var planet = system.mainPlanet;
+		copy.planet_position = planet.position;
+		copy.planet_orientation = planet.orientation;
+		copy.sun_position = system.sun.position;
+		copy.sun_color = system.sun.color;
+		copy.sun_radius = system.sun.radius;
 		gal.systems[i] =  copy;
 	}
 	log(this,JSON.stringify( gal ) );
